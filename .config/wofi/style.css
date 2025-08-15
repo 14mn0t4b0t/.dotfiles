@@ -1,0 +1,55 @@
+* {
+    font-family: "Rotomono Nerd Font bold";
+    font-weight: 600;
+    font-size: 12px;
+}
+
+window {
+    background-color: #0F1117;
+    border: 0px solid #16161D;
+    box-shadow: none;
+    outline: none;
+}
+
+#input {
+    margin: 2px;
+    padding: 4px;
+    border: none;
+    background-color: #16161D;
+    color: #C5C7D0;
+}
+
+#inner-box {
+    margin: 0px;
+}
+
+#outer-box {
+    margin: 0px;
+}
+
+#scroll {
+    margin: 0px;
+}
+
+#text {
+    margin: 0px;
+    color: #818596;
+}
+
+#entry, #entry:active, #entry._focused, #entry:focus {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transition: none !important; 
+}
+
+#entry:selected {
+    background-color: #2E313F !important;
+    color: #C5C7D0 !important;
+}
+
+#img {
+    margin: 2px;
+    padding-left: 4px;
+}

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+swww kill &
+
+
+
+sleep 1 &&
+
+$HOME/.config/scripts/hotkeys.sh &
+
+swww-daemon --format xrgb &
+
+
+
+#pidof -q gpaste-daemon || setsid -f gpaste-client daemon >/dev/null 2>&1 &

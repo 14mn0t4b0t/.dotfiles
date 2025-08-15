@@ -1,0 +1,77 @@
+
+# Hotkeys config
+
+
+
+	# ESSENTIALS #
+
+ # Reload swhkd config
+super + alt + r
+	kitty sudo systemctl restart hotkeys
+
+ # Open Kitty terminal
+super + alt + 1
+	kitty
+
+ # Open Yazi (Kitty) file manager
+super + alt + 3
+	kitty yazi	
+
+ # Change layout distribution
+super + d
+	$HOME/.config/scripts/keyboard-lang.sh
+
+
+	# Programs
+
+ # App launcher
+super + alt + 2
+	$HOME/.config/scripts/launcher.sh
+
+ # Power menu
+super + p
+	$HOME/.config/scripts/powermenu-rofi.sh
+
+ # Screenshot
+super + s
+	$HOME/.config/scripts/screenshot-wofi.sh
+#	$HOME/.config/scripts/screenshot-rofi.sh	
+
+ # Clipboard
+super + v
+	$HOME/.config/scripts/rofi-gpaste.sh
+
+ # Calculator launcher
+super + c
+	wofi -show calc -modi calc -no-show-match -no-sort
+
+ # Wallpaper selector
+super + alt + 0
+	htop
+	#$HOME/.config/scripts/wallpaper-wofi.sh
+
+	# Multimedia keys
+
+XF86AudioRaiseVolume
+	pactl set-sink-volume @DEFAULT_SINK@ +2%
+
+XF86AudioLowerVolume
+	pactl set-sink-volume @DEFAULT_SINK@ -2%
+
+XF86AudioMute
+	amixer -q set Master toggle
+
+XF86AudioPlay
+	playerctl play-pause
+
+XF86AudioNext
+	playerctl next
+
+XF86AudioPrev
+	playerctl previous
+
+XF86MonBrightnessUp
+    brightnessctl set +2%
+
+XF86MonBrightnessDown
+    brightnessctl set -2%

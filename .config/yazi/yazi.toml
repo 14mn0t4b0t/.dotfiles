@@ -1,0 +1,166 @@
+[opener]
+img = [
+  { run = 'nsxiv "$@"', orphan = true, for = "unix" }
+]
+video = [
+  { run = 'mpv "$@"', orphan = true, for = "unix" }
+]
+audio = [
+  { run = 'mpv "$@"', block = true, for = "unix" },
+  { run = 'mpv "$@"', orphan = true, for = "unix" },
+  { run = 'deadbeef "$@"', orphan = true, for = "unix" }
+]
+midi = [
+  { run = 'qmidiplayer "$@"', orphan = true, for = "unix" }
+]
+docs = [
+  { run = 'onlyoffice-desktopeditors "$@"', orphan = true, for = "unix" }
+]
+exe = [
+  { run = 'wine "$@"', orphan = true, for = "unix" }
+]
+edit = [
+  { run = 'kitty nvim "$@"', orphan = true, for = "unix" },
+  { run = 'kitty nano "$@"', orphan = true, for = "unix" },
+  { run = 'kitty /bin/bash "$@"', orphan = true, for = "unix" },
+  { run = 'nvim "$@"', block = true, for = "unix" }
+]
+
+compressed = [
+  { run = 'kitty 7z x -y "$@"', orphan = true, for = "unix" },
+  #{ run = 'unzip "$@"', orphan = true, for = "unix" },
+  { run = 'kitty tar -xvf "$@"', orphan = true, for = "unix" }
+]
+
+#fallback = [
+#  { run = 'nvim "$@"', block = true, for = "unix" },
+#  { run = 'xdg-open "$@"', orphan = true, for = "unix" }
+#]
+
+[open]
+rules = [
+  # Imágenes
+  { name = "*.png", use = "img" },
+  { name = "*.jpg", use = "img" },
+  { name = "*.jpeg", use = "img" },
+  { name = "*.gif", use = "img" },
+  { name = "*.bmp", use = "img" },
+
+  # Video
+  { name = "*.mp4", use = "video" },
+  { name = "*.mkv", use = "video" },
+  { name = "*.webm", use = "video" },
+  { name = "*.avi", use = "video" },
+
+  # Audio
+  { name = "*.flac", use = "audio" },
+  { name = "*.m4a", use = "audio" },
+  { name = "*.mp3", use = "audio" },
+  { name = "*.opus", use = "audio" },
+  { name = "*.wav", use = "audio" },
+  { name = "*.ogg", use = "audio" },
+
+
+  # Midi
+  { name = "*.midi", use = "midi" },
+  { name = "*.mid", use = "midi" },
+
+  # Documentos y PDF
+  { name = "*.pdf", use = "docs" },
+  { name = "*.docx", use = "docs" },
+  { name = "*.xlsx", use = "docs" },
+  { name = "*.pptx", use = "docs" },
+
+  # Ejecutables
+  { name = "*.exe", use = "exe" },
+
+  # Código y texto plano
+  { mime = "text/*", use = "edit" },
+  { name = "*.md", use = "edit" },
+  { name = "*.toml", use = "edit" },
+  { name = "*.json", use = "edit" },
+  { name = "*.lua", use = "edit" },
+  { name = "*.sh", use = "edit" },
+  { name = "*.py", use = "edit" },
+  { name = "*.js", use = "edit" },
+  { name = "*.ts", use = "edit" },
+  { name = "*.html", use = "edit" },
+  { name = "*.css", use = "edit" },
+  { name = "*.c", use = "edit" },
+  { name = "*.cpp", use = "edit" },
+  { name = "*.h", use = "edit" },
+
+  # Compress
+  { name = "*.zip", use = "compressed" },
+  { name = "*.rar", use = "compressed" },
+  { name = "*.7z", use = "compressed" },
+  { name = "*.tar", use = "compressed" },
+  { name = "*.tar.gz", use = "compressed" },
+  { name = "*.tar.xz", use = "compressed" },
+  { name = "*.tar.bz2", use = "compressed" },
+  { name = "*.tgz", use = "compressed" },
+  { name = "*.iso", use = "compressed" },
+
+#  # Fallback para cualquier otro archivo
+#  { name = "*", use = "fallback" }
+
+]
+
+[plugin]
+  prepend_preloaders = [
+    # Replace magick, image, video with mediainfo
+    { mime = "{audio,video,image}/*", run = "mediainfo" },
+    { mime = "application/subrip", run = "mediainfo" },
+    #{ name = "*.csv", run = "duckdb", multi = false },  
+    #{ name = "*.tsv", run = "duckdb", multi = false },  
+    #{ name = "*.json", run = "duckdb", multi = false },  
+    #{ name = "*.parquet", run = "duckdb", multi = false },
+    #{ name = "*.txt", run = "duckdb", multi = false },  
+    #{ name = "*.xlsx", run = "duckdb", multi = false }
+    
+    # Do not preload files in mounted locations:
+    # Environment variable won't work here.
+    # Using absolute path instead.
+    #{ name = "/run/user/1000/gvfs/**/*", run = "noop" },
+
+    # For mounted location for hard disk/drive
+    #{ name = "/run/media/maeda/**/*", run = "noop" }
+    #... the rest of preloaders
+  ]
+  prepend_previewers = [
+    # Replace magick, image, video with mediainfo
+    { mime = "{audio,video,image}/*", run = "mediainfo"},
+    { mime = "application/subrip", run = "mediainfo" },
+    { name = "*.md", run = "glow" },
+    { name = "*.csv", run = "rich-preview"}, # for csv files
+    #{ name = "*.md", run = "rich-preview" }, # for markdown (.md) files
+    { name = "*.rst", run = "rich-preview"}, # for restructured text (.rst) files
+    { name = "*.ipynb", run = "rich-preview"}, # for jupyter notebooks (.ipynb)
+    #{ name = "*.json", run = "rich-preview"}, # for json (.json) files
+    #{ name = "*.py", run = "rich-preview"}, # for python (.py) files
+    #{ name = "*.lang_type", run = "rich-preview"}, # for particular language files eg. .py, .go., .lua, etc.
+    #{ name = "*.csv", run = "duckdb" },  
+    #{ name = "*.tsv", run = "duckdb" },  
+    #{ name = "*.json", run = "duckdb" },  
+    #{ name = "*.parquet", run = "duckdb" },  
+    #{ name = "*.txt", run = "duckdb" },  
+    #{ name = "*.xlsx", run = "duckdb" },  
+    #{ name = "*.db", run = "duckdb" },
+    #{ name = "*.duckdb", run = "duckdb" }
+    #{ name = "*.torrent", run = "torrent-preview" }
+    
+    # Allow to preview folder.
+    #{ name = "*/", run = "folder", sync = true },
+    # Do not previewing files in mounted locations (uncomment to except text file):
+    # { mime = "{text/*,application/x-subrip}", run = "code" },
+    # Using absolute path.
+    #{ name = "/run/user/1000/gvfs/**/*", run = "noop" },
+
+    # For mounted hard disk.
+    #{ name = "/run/media/maeda/**/*", run = "noop" }
+    #... the rest of previewers
+  ]
+  # There are more extensions which are supported by mediainfo.
+  # Just add file's MIME type to `previewers`, `preloaders` above.
+  # https://mediaarea.net/en/MediaInfo/Support/Formats
+

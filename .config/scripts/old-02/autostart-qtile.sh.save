@@ -1,0 +1,25 @@
+#!/bin/sh
+
+  # Screen setup
+
+#xrandr --output eDP1 --mode 1366x768 --panning 1640x922 --scale 1.20058565x1.20208604 &
+#xrandr --fb 1641x923 --output eDP1 --mode 1366x768 --panning 1640x922 --scale 1.20058565x1.20208604 &
+
+
+  #keyboard default configuration
+
+setxkbmap -layout latam &
+
+
+  #System programs
+
+sleep 1
+
+nm-applet &
+blueman-applet &
+udiskie -t &
+$HOME/.config/scripts/wallpaper-rofi.sh init &
+
+#picom &
+#cbatticon -u 5 &
+#volumeicon &

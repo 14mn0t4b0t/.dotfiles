@@ -1,0 +1,17 @@
+[Unit]
+Description=Post-suspend recovery script for Wayland components
+After=suspend.target
+After=hibernate.target
+After=hybrid-sleep.target
+
+[Service]
+Type=oneshot
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
+Environment="WAYLAND_DISPLAY=wayland-1"
+ExecStart=/home/maeda/.config/scripts/post-suspend.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=suspend.target
+WantedBy=hibernate.target
+WantedBy=hybrid-sleep.target

@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+
+# Settings
+WALLPAPER_DIR="$HOME/Pictures/wallpapers"
+CACHE_DIR="$HOME/.cache/wallpaper-selector"
+DB_FILE="$CACHE_DIR/wallpapers.csv"
+THUMBNAIL_WIDTH=1280
+THUMBNAIL_HEIGHT=720
+SHUFFLE_ICON="$CACHE_DIR/shuffle_thumbnail.png"
+GENERATE_DB_ICON="$CACHE_DIR/generate_db_thumbnail.png"
+WOFI_CONFIG="$HOME/.config/scripts/wallpaper.conf"
+
+
+mkdir -p "$CACHE_DIR"
+
+generate_db() {
+  : > "$DB_FILE"
+
+  find "$WALLPAPER_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) | while read -r img; do
+    [[ -f "$img" ]] || continue
+
+    hash=$(md5sum "$img" | cut -d' ' -f1)
+    name=$(basename "$img")
+    name="${name%.*}"
+    maybe_name=$(echo "$name" | awk -F'__' '{print $2}')
+    
+    if [[ -n "$maybe_name" ]]; then
+      name="$maybe_name"
+    fi
+
+    thumb="$CACHE_DIR/__${name}__${hash}.png"
+
+    if [[ ! -f "$thumb" || "$thumb" -ot "$img" ]]; then
+      echo "thumbnail made: $hash $name"
+      magick "$img" -resize "${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}" \
+        -background none -gravity center -extent "${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}" "$thumb"
+    fi
+
+    printf '"%s","%s","%s"\n' "$hash" "$name" "$img" >> "$DB_FILE"
+  done
+
+  awk -F',' -v dir="$WALLPAPER_DIR" '
+    BEGIN { OFS="," }
+    {
+      if (system("test -f \"" $3 "\"") == 0) {
+        print $0
+      }
+    }
+' "$DB_FILE" > "${DB_FILE}.tmp" && mv "${DB_FILE}.tmp" "$DB_FILE"
+
+  find "$CACHE_DIR" -type f -name "*.png" ! -name "$(basename "$SHUFFLE_ICON")" ! -name "$(basename "$GENERATE_DB_ICON")" | while read -r thumb; do
+    hash=$(basename "$thumb" .png | awk -F'__' '{print $NF}')
+    if ! grep -q "\"$hash\"" "$DB_FILE"; then
+      echo "removing orphaned thumbnail: $thumb"
+      rm -f "$thumb"
+    fi
+  done
+}
+
+create_icon() {
+  local icon_path="$1"
+  local color="$2"
+  local label="$3"
+  local font="$4"
+  local size="$5"
+
+  [[ -f "$icon_path" ]] && return
+
+  magick -size ${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT} canvas:none \
+    -gravity center -fill "$color" -draw "rectangle 0,0 $THUMBNAIL_WIDTH,$THUMBNAIL_HEIGHT" \
+    -font "$font" -fill white -pointsize $size -annotate 0 "$label" \
+    "$icon_path"
+
+  echo "icon created: $icon_path"
+}
+
+# Icon configuration
+create_icon "$SHUFFLE_ICON" "#E7E8AB" "RANDOM" "RobotoMono-Nerd-Font-SmBd" 240
+create_icon "$GENERATE_DB_ICON" "#BCE0F5" "UPDATE" "RobotoMono-Nerd-Font-SmBd" 240
+
+generate_menu() {
+  printf "img:%s\000!Update Database\037GENERATE_DB\n" "$GENERATE_DB_ICON"
+  printf "img:%s\000!Random Wallpaper\037RANDOM\n" "$SHUFFLE_ICON"
+
+  [[ -f "$DB_FILE" ]] || return
+
+  while IFS=',' read -r hash name path; do
+    hash="${hash//\"/}"
+    name="${name//\"/}"
+    path="${path//\"/}"
+
+    [[ -f "$path" ]] || continue
+    thumb="$CACHE_DIR/__${name}__${hash}.png"
+    
+    # Convertir guiones bajos a espacios para mejor búsqueda difusa
+    display_name="${name//_/ }"
+    
+    # Formato del nombre: {tags con espacios} {md5}
+    search_text="$display_name ${hash:0:8}"
+    
+    [[ -f "$thumb" ]] && printf "img:%s\000%s\037%s\n" "$thumb" "$search_text" "$hash"
+  done < "$DB_FILE"
+}
+
+set_wallpaper() {
+  local path="$1"
+  swaybg -m fill -i "$path" &
+  echo "$path" > "$HOME/.cache/current_wallpaper"
+  notify-send "Wallpaper" "Wallpaper has been updated" -i "$path"
+}
+
+main() {
+  selected=$(generate_menu | wofi --show dmenu \
+    --cache-file /dev/null \
+    --define "image-size=${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}" \
+    --columns 3 --allow-images --sort-order=default \
+    --matching strict-contains \
+    --prompt "Select Wallpaper" --conf "$WOFI_CONFIG")
+
+  [[ -z "$selected" ]] && exit
+
+  case "$selected" in
+    "GENERATE_DB")
+      echo "Updating database..."
+      generate_db
+      main
+      return
+      ;;
+    "RANDOM")
+      if [[ -s "$DB_FILE" ]]; then
+        random_path=$(shuf -n1 "$DB_FILE" | cut -d',' -f3 | tr -d '"')
+        echo $random_path
+        [[ -f "$random_path" ]] && set_wallpaper "$random_path"
+      else
+        notify-send "Wallpaper Error" "No wallpapers found. Generate the database."
+      fi
+      ;;
+    *)
+      # El valor seleccionado ahora es el hash directamente
+      hash="$selected"
+      original_path=$(awk -F',' -v h="\"$hash\"" '$1 == h {gsub(/"/, "", $3); print $3}' "$DB_FILE")
+      if [[ -f "$original_path" ]]; then
+        set_wallpaper "$original_path"
+      else
+        notify-send "Wallpaper Error" "Original file not found: $original_path"
+      fi
+      ;;
+  esac
+}
+
+main

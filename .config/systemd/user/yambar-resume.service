@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart yambar after resume
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/yambar
+
+[Install]
+WantedBy=suspend.target

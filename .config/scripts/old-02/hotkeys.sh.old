@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Configurar variables de entorno
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export XDG_CONFIG_HOME=$HOME/.config
+
+# Detener swhks y swhkd si ya están en ejecución
+killall swhks 2>/dev/null &
+killall swhkd 2>/dev/null &
+
+
+swhks & 
+doas swhkd
+#swhkd
+
+
+#pkexec killall swhkd &
+
+# Esperar un momento para asegurarse de que los procesos se hayan detenido
+#sleep 0.5
+
+# Iniciar swhks en segundo plano
+#swhks &
+
+# Esperar a que swhks se inicialice completamente
+#sleep 0.5
+
+# Iniciar swhkd en segundo plano
+
+#swhkd &
+
+#pkexec env XDG_RUNTIME_DIR=/run/user/$(id -u) XDG_CONFIG_HOME=$HOME/.config swhkd &
+
+# Mantener el script en ejecución para evitar que el proceso padre termine
+while true; do
+    sleep 60
+done

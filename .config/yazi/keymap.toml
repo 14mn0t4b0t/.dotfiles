@@ -1,0 +1,61 @@
+[mgr]
+prepend_keymap = [
+
+    # ========================================
+    # SHORTCUTS
+    # ========================================
+    { on = [ "g", "d" ], run = "cd ~/Downloads", desc = "~/Downloads" },
+    { on = [ "g", "w" ], run = "cd ~/Desktop", desc = "~/Desktop" },
+    { on = [ "g", "o" ], run = "cd ~/Documents", desc = "~/Documents" },
+    { on = [ "g", "p" ], run = "cd ~/Pictures", desc = "~/Pictures" },
+    { on = [ "g", "t" ], run = "cd ~/.local/share/Trash/files", desc = "Go to Trash" },
+    { on = [ "g", "u" ], run = "cd /run/media/$USER", desc = "mounted disks" },
+    { on = [ "g", "m" ], run = "cd /mnt/", desc = "/mnt" },
+    { on = [ "g", "s" ], run = "cd ~/.config/scripts", desc = "Go to scripts" },
+
+    # ========================================
+    # TOGGLE PANELS
+    # ========================================
+    { on = "<C-1>", run = "plugin toggle-pane min-parent", desc = "Show or hide the parent pane" },
+    { on = "<C-2>", run = "plugin toggle-pane min-current", desc = "Show or hide the current pane" },
+    { on = "<C-3>", run = "plugin toggle-pane min-preview", desc = "Show or hide the preview pane" },
+
+    # ========================================
+    # COMANDS
+    # ========================================
+    { on = [ "g", "v" ], run = "shell --block 'pcmanfm .'", desc = "Open GUI File Manager" },
+    { on = "H", run = "plugin duckdb -1", desc = "Scroll one column to the left" },
+    { on = "L", run = "plugin duckdb +1", desc = "Scroll one column to the right" },
+    { on = "e", run = "shell --confirm 'kitty .'", desc = "Abrir Kitty en este directorio" },
+    { on = "M", run = "plugin mount", desc = "Montar dispositivo" },
+
+    # gvfs plugin
+    { on = [ "n", "M" ], run = "plugin gvfs -- select-then-mount", desc = "Select device then mount" },
+    # or this if you want to jump to mountpoint after mounted
+    { on = [ "n", "m" ], run = "plugin gvfs -- select-then-mount --jump", desc = "Select device to mount and jump to its mount point" },
+    # This will remount device under cwd (e.g. cwd = /run/user/1000/gvfs/DEVICE_1/FOLDER_A, device mountpoint = /run/user/1000/gvfs/DEVICE_1)
+    { on = [ "n", "R" ], run = "plugin gvfs -- remount-current-cwd-device", desc = "Remount device under cwd" },
+    { on = [ "n", "u" ], run = "plugin gvfs -- select-then-unmount", desc = "Select device then unmount" },
+    # or this if you want to unmount and eject device. Ejected device can safely be removed.
+    # Ejecting a device will unmount all paritions/volumes under it.
+    # Fallback to normal unmount if not supported by device.
+    { on = [ "n", "U" ], run = "plugin gvfs -- select-then-unmount --eject", desc = "Select device then eject" },
+    # Also support force unmount/eject.
+    # force = true -> Ignore outstanding file operations when unmounting or ejecting
+    { on = [ "n", "F" ], run = "plugin gvfs -- select-then-unmount --eject --force", desc = "Select device then force to eject/unmount" },
+
+    # Add|Edit|Remove mountpoint: smb, sftp, ftp, nfs, dns-sd, dav, davs, dav+sd, davs+sd, afp, afc, sshfs
+    # Read more about the schemes here: https://wiki.gnome.org/Projects(2f)gvfs(2f)schemes.html
+    # For example: smb://user@192.168.1.2/share, smb://WORKGROUP;user@192.168.1.2/share, sftp://user@192.168.1.2/, ftp://192.168.1.2/
+    # - Scheme/Mount URIs shouldn't contain password.
+    # - Google Drive, One drive are mounted automatically via GNOME Online Accounts (GOA). Avoid adding them. Use GOA instead: ./GNOME_ONLINE_ACCOUNTS_GOA.md
+    # - MTP, GPhoto2, AFC, Hard disk/drive are listed automatically. Avoid adding them
+    { on = [ "n", "a" ], run = "plugin gvfs -- add-mount", desc = "Add a GVFS mount URI" },
+    # Edit or remove a GVFS mount URI will clear saved passwords for that mount URI.
+    { on = [ "n", "e" ], run = "plugin gvfs -- edit-mount", desc = "Edit a GVFS mount URI" },
+    { on = [ "n", "r" ], run = "plugin gvfs -- remove-mount", desc = "Remove a GVFS mount URI" },
+
+    # Jump
+    { on = [ "g", "n" ], run = "plugin gvfs -- jump-to-device", desc = "Select device then jump to its mount point" },
+    { on = [ "`", "`" ], run = "plugin gvfs -- jump-back-prev-cwd", desc = "Jump back to the position before jumped to device" },
+]

@@ -1,0 +1,51 @@
+* {
+    font-family: "Rotomono Nerd Font";
+    font-weight: 600; /* Semibold */
+    font-size: 12px;
+}
+
+window {
+    background-color: #1e1e2e;
+    border: 2px solid #313244;
+}
+
+#input {
+    margin: 2px;
+    padding: 4px;
+    border: none;
+    background-color: #313244;
+    color: #cdd6f4;
+}
+
+#inner-box {
+  margin: 0px;
+}
+
+#outer-box {
+  margin: 0px;
+}
+
+#scroll {
+  margin: 0px;
+}
+
+#text {
+  margin: 2px;
+  color: #cdd6f4;
+}
+
+#entry {
+  padding: 2px;
+  margin: 0px;
+}
+
+#entry:selected {
+  background-color: #313244;
+}
+
+#img {
+  margin: 2px;
+  padding-left: 4px;
+}
+
+

@@ -1,0 +1,30 @@
+- defaults:
+    link:
+      relink: true
+      create: true
+
+- clean: ['~']
+
+- link:
+# ─────────────────────────────────────────────────────────────
+# ✦ Terminal: bash - kitty
+# ─────────────────────────────────────────────────────────────
+
+    ~/.bashrc:                  home/.bashrc
+    ~/.bash_profile:            home/.bash_profile
+    ~/.bash-preexec:            home/.bash-preexec.sh
+    ~/.config/kitty/kitty.conf: .config/kitty/kitty.conf
+
+# ─────────────────────────────────────────────────────────────
+# ✦ Terminal Utilitys: nvim - yazi
+# ─────────────────────────────────────────────────────────────
+
+    ~/.config/yazi:             .config/yazi
+    ~/.config/nvim:             .config/nvim
+  
+# - create:
+#     - ~/downloads
+#     - ~/.vim/undo-history
+
+# - shell:
+#   - [git submodule update --init --recursive, Installing submodules]

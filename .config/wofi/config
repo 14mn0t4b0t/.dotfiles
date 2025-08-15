@@ -1,0 +1,5 @@
+show=search
+allow_images=true
+image_size=32x32
+no_actions=true
+hide_scroll=true

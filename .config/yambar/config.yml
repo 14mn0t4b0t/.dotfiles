@@ -1,0 +1,352 @@
+# Color Variables for Each Module
+global_colors:
+  background: &global_bg "181D20FF"      # Main bar background
+  foreground: &global_fg "BABABAFF"      # Default text color
+  separator: &separator_color "555555FF" # Module separators
+
+# River (workspace) module colors
+river_colors:
+  focused: &river_focused "6F8BA0FF"     # Active workspace background
+  urgent: &river_urgent "D08770FF"       # Urgent workspace background
+  occupied: &river_occupied "4A5F71FF"   # Occupied but not focused
+  inactive: &river_inactive "3B4252FF"   # Inactive workspace
+
+# Foreign-toplevel (window title) colors
+foreign_toplevel_colors:
+  app_id: &foreign_app_id "D8D8D8FF"      # Application ID color
+  title: &foreign_title "ECEFF4FF"        # Window title color
+
+# Network module colors
+network_colors:
+  connected: &network_connected "88C0D0FF"    # Connected ethernet/wifi
+  disconnected: &network_disconnected "FF0000FF" # Disconnected state
+  weak_signal: &network_weak "FFFFFF66"       # Weak connection
+
+# System monitoring colors (Pastel/Retro)
+system_colors:
+  cpu_normal: &cpu_normal "B5EAD7FF"      # Mint green - CPU usage normal
+  cpu_high: &cpu_high "FFDAC1FF"          # Peach - CPU usage high
+  memory_normal: &memory_normal "FF9AA2FF" # Pastel pink - Memory usage normal
+  memory_high: &memory_high "FFB7B2FF"     # Light coral - Memory usage high
+  disk_normal: &disk_normal "FFDFD3FF"     # Cream - Disk usage normal
+  disk_high: &disk_high "FFADADFF"        # Light salmon - Disk usage high
+  temp_normal: &temp_normal "C7CEDBFF"     # Lavender gray - Temperature normal
+  temp_high: &temp_high "F4A261FF"        # Sandy brown - Temperature high
+
+# GPU module colors (Pastel/Retro)
+gpu_colors:
+  normal: &gpu_normal "A8E6CFFF"          # Pastel green - Normal GPU usage
+  high: &gpu_high "FFD3A5FF"              # Pastel orange - High GPU usage
+
+# Audio module colors (Pastel/Retro)
+audio_colors:
+  volume_normal: &audio_normal "C8A2C8FF" # Lilac - Normal volume
+  volume_muted: &audio_muted "D3D3D3AA"   # Light gray - Muted volume
+  volume_low: &audio_low "FFB347FF"       # Golden yellow - Low volume warning
+  volume_high: &audio_high "FF6B6BFF"     # Coral red - High volume warning
+
+# Battery module colors (Pastel/Retro)
+battery_colors:
+  critical: &battery_critical "FF6B6BFF"  # Coral red - Critical battery (0-20%)
+  low: &battery_low "FFB347FF"            # Golden yellow - Low battery (20-40%)
+  medium: &battery_medium "A8E6CFFF"      # Pastel green - Medium battery (40-70%)
+  high: &battery_high "87CEEBFF"          # Sky blue - High battery (70-90%)
+  full: &battery_full "98FB98FF"          # Pale green - Full battery (90-100%)
+  charging: &battery_charging "F0E68CFF"  # Khaki - Charging state
+
+# Backlight module colors (Pastel/Retro)
+backlight_colors:
+  normal: &backlight_normal "F5DEB3FF"    # Wheat - Normal backlight
+
+# Clock module colors (Pastel/Retro)
+clock_colors:
+  date: &clock_date "DDA0DDFF"            # Plum - Date color
+  time: &clock_time "ECEFF4FF" #"E6E6FAFF"# Lavender - Time color
+
+# Font definitions
+roboto_mono: &roboto_mono "RobotoMono Nerd Font:bold:pixelsize=8"
+awesome: &awesome "RobotoMono Nerd Font:bold:pixelsize=8"
+
+# Default styles
+bg_default: &bg_default {stack: [{background: {color: *river_focused}}]}
+std_underline: &std_underline {underline: {size: 1, color: D8DEE9ff}}
+
+
+
+bar:
+  height: 10
+  location: top
+  font: "RobotoMono Nerd Font:bold:pixelsize=9"
+  spacing: 0
+  margin: 0
+  layer: bottom
+  foreground: *global_fg
+  background: *global_bg
+
+  left:
+    - river:
+        anchors:
+          - base: &river_base
+              left-margin: 6
+              right-margin: 6
+              default: {string: {text: $, font: *roboto_mono}} #
+              conditions:
+                id == 1: {string: {text: 1, font: *roboto_mono}}
+                id == 2: {string: {text: 2, font: *roboto_mono}}
+                id == 3: {string: {text: 3, font: *roboto_mono}}
+                id == 4: {string: {text: 4, font: *roboto_mono}}
+                id == 5: {string: {text: 5, font: *roboto_mono}}
+                id == 6: {string: {text: 6, font: *roboto_mono}}
+                id == 7: {string: {text: 7, font: *roboto_mono}}
+                id == 8: {string: {text: 8, font: *roboto_mono}}
+
+
+        content:
+          map:
+            on-click:
+              left: sh -c "riverctl set-focused-tags $((1 << ({id} - 1)))"
+              right: sh -c "riverctl toggle-focused-tags $((1 << ({id} -1)))"
+              middle: sh -c "riverctl toggle-view-tags $((1 << ({id} -1)))"
+            conditions:
+              state == urgent:
+                map:
+                  <<: *river_base
+                  deco: {background: {color: *river_urgent}}
+              state == focused:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == visible && ~occupied:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == visible && occupied:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == unfocused:
+                map:
+                  <<: *river_base
+
+              state == invisible && ~occupied && id < 9:
+                map:
+                  <<: *river_base
+              state == invisible && ~occupied && id >= 9:
+                empty: {}
+
+#              state == invisible && ~occupied: {empty: {}}
+              state == invisible && occupied:
+                map:
+                  <<: *river_base
+                  deco: {background: {color: 4A5F71FF}}
+
+
+    - foreign-toplevel:
+        content:
+          map:
+            conditions:
+              ~activated: {empty: {}}
+              activated:
+                - string: {text: "{app-id}", foreground: *foreign_app_id, left-margin: 2}
+                - string: {text: ": {title}", foreground: *foreign_title}
+
+
+
+#  right:
+#    - removables:
+#        anchors:
+#          drive: &drive { text: , font: *awesome}
+#          optical: &optical {text: , font: *awesome}
+#        spacing: 5
+#        content:
+#          map:
+#            conditions:
+#              ~mounted:
+#                map:
+#                  on-click: udisksctl mount -b {device}
+#                  conditions:
+#                    ~optical: [{string: *drive}, {string: {text: "{label}"}}]
+#                    optical: [{string: *optical}, {string: {text: "{label}"}}]
+#              mounted:
+#                map:
+#                  on-click: udisksctl unmount -b {device}
+#                  conditions:
+#                    ~optical:
+#                      - string: {<<: *drive, deco: *std_underline}
+#                      - string: {text: "{label}"}
+#                    optical:
+#                      - string: {<<: *optical, deco: *std_underline}
+#                      - string: {text: "{label}"}
+
+  right:
+    - network:
+        content:
+          map:
+            default: {empty: {}}
+            conditions:
+              name == enp1s0:
+                map:
+                  conditions:
+                    ~carrier: {empty: {}}
+                    carrier:
+                      map:
+                        default: {string: {text: , font: *awesome, foreground: *network_weak}}
+                        conditions:
+                          state == up && ipv4 != "": {string: {text: , font: *awesome, foreground: *network_connected}}
+     
+    - network:
+        poll-interval: 2000
+        content:
+          map:
+            conditions:
+              name == wlan0:
+                map:
+                  on-click: kitty nmtui
+                  conditions:
+                    state == down:
+                      - string: {text: "| ", font: *awesome, foreground: *network_disconnected}
+                    state == up:
+                      #- string: {text: , font: *awesome}
+                      #- string: {text: "{ssid}", font: *awesome}
+                      - string: {text: "| ↑{ul-speed:mb}/{dl-speed:mb}↓"}
+
+
+    - script:
+        path: ~/.config/yambar/modules/intel-gpu.sh
+        content: {string: {text: "| {gpu_usage}% {gpu_power}W", foreground: *gpu_normal, right-margin: 1}}
+
+    - script:
+        path: ~/.config/yambar/modules/nvidia.sh
+        args: [1]
+        content: {string: {text: "| {gpu_mem_used}MiB {gpu_usage}% {gpu_temp}°C", foreground: *gpu_normal, right-margin: 1}}
+
+    - script:
+        path: ~/.config/yambar/modules/memory.sh
+        args: [1]
+        content: {string: {text: "| {memory}", foreground: *memory_normal, right-margin: 4}}
+
+
+    - script:
+        path: ~/.config/yambar/modules/disk.sh
+        args: [1]
+        content: {string: {text: "/{disk}", foreground: *disk_normal, right-margin: 1}}
+
+
+    - script:
+        path: ~/.config/yambar/modules/cpu.sh
+        args: [1]
+        content: {string: {text: "| {cpu}%", foreground: *cpu_normal, right-margin: 3}}
+
+
+    - script:
+        path: ~/.config/yambar/modules/cpu-temp.sh
+        args: [2]
+        content: {string: {text: "{temp}°C", foreground: *temp_normal}}
+
+
+
+
+    - alsa:
+        card: default
+        mixer: Master
+        content:
+          map:
+            conditions:
+              ~online: {string: {text: "| ", font: *awesome, foreground: *network_disconnected}}
+              online:
+                map:
+                  on-click: pavucontrol
+                  conditions:
+                    muted: {string: {text: "| {percent}%", font: *awesome, foreground: *audio_muted}}
+                    ~muted:
+                      list:  # Usamos "list" en lugar de "ramp" para agrupar elementos
+                        items:
+                          - ramp:  # Ícono del volumen según el %
+                              tag: percent
+                              items:
+                                - string: {text: "| ", font: *awesome}
+                                - string: {text: "| ", font: *awesome}
+                                - string: {text: "| ", font: *awesome}
+                          - string: {text: "{percent}%", foreground: *audio_normal, right-margin: 3}  # Porcentaje fuera del ramp
+
+
+
+    - backlight:
+        name: intel_backlight
+        content: [ string: {text: " ", font: *awesome, foreground: *backlight_normal }, string: {text: "{percent}%", foreground: *backlight_normal}]
+
+
+    - battery:
+        name: BAT0
+        poll-interval: 30000
+        anchors:
+          discharging: &discharging
+            list:
+              items:
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text: "| ", foreground: *battery_critical, font: *awesome}
+                      - string: {text: "| ", foreground: *battery_low, font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", font: *awesome}
+                      - string: {text: "| ", foreground: *battery_full, font: *awesome}
+                - string: {text: " {capacity}% {estimate}"}
+        content:
+          map:
+            conditions:
+              state == unknown:
+                <<: *discharging
+              state == discharging:
+                <<: *discharging
+              state == charging:
+                - string: {text: "| ", foreground: *battery_charging, font: *awesome}
+                - string: {text: " {capacity}%"}
+              state == full:
+                - string: {text: "| ", foreground: *battery_full, font: *awesome}
+                - string: {text: " {capacity}%"}
+              state == "not charging":
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text: "|  ", foreground: *battery_critical, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_low, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_medium, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_medium, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_medium, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_medium, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_medium, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_high, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_full, font: *awesome}
+                      - string: {text: "|  ", foreground: *battery_full, font: *awesome}
+                - string: {text: " {capacity}%"}
+
+    - clock:
+        date-format: "%Y/%m/%d"   # Formato: AAAA/MM/DD
+        time-format: "%I:%M:%S %p" # Formato: 12h con minutos, segundos y AM/PM
+        content:
+          #- string: {text: , font: *awesome}
+          - string: {text: "| {date}", foreground: *clock_date, right-margin: 2}
+          #- string: {text: , font: *awesome}
+          - string: {text: "{time}", foreground: *clock_time}
+
+
+#    - clock:
+#        time-format: "%H:%M %Z"
+#        content:
+#          - string: {text: , font: *awesome}
+#          - string: {text: "{date}", right-margin: 5}
+#          - string: {text: , font: *awesome}
+#          - string: {text: "{time}"}
+
+#    - label:
+#        content:
+#          string:
+#            on-click: systemctl poweroff
+#            text: 
+#            font: *awesome
