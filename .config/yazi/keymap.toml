@@ -28,6 +28,11 @@ prepend_keymap = [
     { on = "L", run = "plugin duckdb +1", desc = "Scroll one column to the right" },
     { on = "e", run = "shell --confirm 'kitty .'", desc = "Abrir Kitty en este directorio" },
     { on = "M", run = "plugin mount", desc = "Montar dispositivo" },
+    # { on = "<C-s>", run = "shell --confirm 'kitty --hold du -hc $@'", desc = "Size" },
+
+    { on = "<C-s>", run = "shell --confirm 'kitty sh -c \"du -hc $@; echo; read -p \\\"Press ENTER to exit...\\\"\"'", desc = "Size" },
+
+
 
     # gvfs plugin
     { on = [ "n", "M" ], run = "plugin gvfs -- select-then-mount", desc = "Select device then mount" },

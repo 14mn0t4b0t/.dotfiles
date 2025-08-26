@@ -18,6 +18,13 @@ export GTK_THEME=Juno-ocean
 export XCURSOR_THEME=miniature
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_STYLE_OVERRIDE=qt5ct
+
+export BROWSER=firefox
+export TERMINAL=kitty
+export EDITOR=nvim
+export FILE_MANAGER=yazi
+export IMAGE=nsxiv
+export VIDEO=mpv
 #export XCURSOR_SIZE=24
 
 # Keyboard layout

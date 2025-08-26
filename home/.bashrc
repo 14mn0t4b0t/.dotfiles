@@ -123,6 +123,16 @@ alias rsync='rsync -avh --progress --partial --info=progress2'
 alias fz='history | fzf'
 alias n='nvim '
 
+export BROWSER=firefox
+export TERMINAL=kitty
+export EDITOR=nvim
+export VISUAL=nvim
+export FILE_MANAGER=yazi
+export VIDEO=mpv
+export AUDIO=mpv
+export IMAGE=nsxiv
+export OFFICE=onlyoffice
+
 # ─────────────────────────────────────────────────────────────
 # ✦ Custom Functions
 # ─────────────────────────────────────────────────────────────
@@ -143,3 +153,5 @@ function y() {
 # https://github.com/rcaloras/bash-preexec/
 [[ -f "$HOME/.bash-preexec.sh" ]] && source "$HOME/.bash-preexec.sh"
 alias fix-suspend="~/.config/scripts/fix-suspend.sh"
+export MESA_GL_VERSION_OVERRIDE=3.3
+export __GL_SHADER_DISK_CACHE=0
